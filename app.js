@@ -6,16 +6,41 @@ const { red, green } = require('chalk');
 let cfg = require('./config.json');
 let userCfg = require('./userConfig');
 
+
 // main
 function main() {
-  let turnOn = false;
-  let arg = process.argv[2];
-  if (arg !== undefined) {
-      turnOn = arg === "on" ? true : false;
-  }
+  let args = getArgs();
 
-  console.log('turn', turnOn ? "ON" : "OFF");
-  switchLights(turnOn);
+  console.log('turn', args.turnOn ? "ON" : "OFF");
+  switchLights(args.turnOn);
+}
+
+function getArgs() {
+  //let turnOn = false;
+  //let arg = process.argv[2];
+
+  let argv = process.argv.slice(2);
+  if (argv.length === 1) {
+    let args = {
+      turnOn: argv[0]
+    };
+
+    // validation
+    if (args.turnOn === "on" || args.turnOn === "off" ) {
+      if (args.turnOn === "on") {
+        args.turnOn = true;
+      } else {
+        args.turnOn = false;
+      }
+    } else {
+      return console.error(red('[ERR]'), 'format: node app.js [on|off]');
+    }
+
+    return args;
+
+  } else {
+    return console.error(red('[ERR]'), 'format: node app.js [on|off]');
+  }
 }
 
 // user
