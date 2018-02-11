@@ -7,6 +7,19 @@ let cfg = require('./config.json');
 let userCfg = require('./userConfig');
 
 
+/*
+
+/lights resource which contains all the light resources
+/groups resource which contains all the groups
+/config resource which contains all the configuration items
+/schedules which contains all the schedules
+/scenes which contains all the scenes
+/sensors which contains all the sensors
+/rules which contains all the rules
+
+*/
+
+
 // main
 function main() {
   let args = getArgs();
@@ -16,9 +29,6 @@ function main() {
 }
 
 function getArgs() {
-  //let turnOn = false;
-  //let arg = process.argv[2];
-
   let argv = process.argv.slice(2);
   if (argv.length === 1) {
     let args = {
@@ -33,13 +43,13 @@ function getArgs() {
         args.turnOn = false;
       }
     } else {
-      return console.error(red('[ERR]'), 'format: node app.js [on|off]');
+      throw new Error('format: node app.js [on|off]');
     }
 
     return args;
 
   } else {
-    return console.error(red('[ERR]'), 'format: node app.js [on|off]');
+    throw new Error('format: node app.js [on|off]');
   }
 }
 
@@ -51,7 +61,7 @@ function initUser(cb) {
     return console.error(red('[ERR] userConfig.json needs deviceType. Format: "[my_app_name]#[device] [your name]"'));
   }
 
-  rq.post(hueAddr(), reqBody({ devicetype: userCfg.deviceType }), function(err, res, body) {
+  rq.post(apiBaseAddr(), reqBody({ devicetype: userCfg.deviceType }), function(err, res, body) {
     if (body.error) {
       console.error(red('[ERR] ' + body.error.description));
       if (cb) {
@@ -68,7 +78,18 @@ function initUser(cb) {
 
 
 // util
-function hueAddr() {
+function _checkInit() {
+  if (userCfg.username === undefined) {
+    throw new Error(red('[ERR] userConfig.json needs username.  Run initUser() if you haven\'t done so.'));
+  }
+}
+
+function reqBody(options) {
+  return { body: options, json: true };
+}
+
+// util: base addresses
+function apiBaseAddr() {
   if (cfg.bridgeIP) {
     return 'http://' + cfg.bridgeIP + '/api';
   } else {
@@ -77,34 +98,87 @@ function hueAddr() {
   }
 }
 
+function _baseAddr(extension) {
+  _checkInit();
+
+  let baseAddr = apiBaseAddr() +'/' + userCfg.username;
+  return baseAddr + extension;
+}
+
+
 function lightsBaseAddr() {
-  if (userCfg.username) {
-    let baseAddr = hueAddr() +'/' + userCfg.username;
-    return baseAddr + '/lights'
-  } else {
-    console.error(red('[ERR] userConfig.json needs username.  Run initUser() if you haven\'t done so.'));
-    return null;
-  }
+  return _baseAddr('/lights');
 }
 
-function lightAddr(num) {
-  num = new String(num);
-  return lightsBaseAddr() + '/' + num + '/state';
+function configBaseAddr() {
+  return _baseAddr('/config');
 }
 
-function reqBody(options) {
-  return { body: options, json: true };
+function groupsBaseAddr() {
+  return _baseAddr('/lights');
 }
 
-// lights alter
-function lightsData(cb) {
+function schedulesBaseAddr() {
+  return _baseAddr('/schedules');
+}
+
+function scenesBaseAddr() {
+  return _baseAddr('/scenes');
+}
+
+function sensorsBaseAddr() {
+  return _baseAddr('/sensors');
+}
+
+function rulesBaseAddr() {
+  return _baseAddr('/rules');
+}
+
+
+// api: get data
+function _getData(baseAddr, cb) {
   rq.get(
-    lightsBaseAddr(), 
+    baseAddr, 
     reqBody({ devicetype: cfg.deviceType }), 
     function(err, res, body) {
       return cb(err, body);
     }
   );
+}
+
+function lightsData(cb) {
+  _getData(lightsBaseAddr(), cb)
+}
+
+function configData(cb) {
+  _getData(configBaseAddr(), cb)
+}
+
+function groupsData(cb) {
+  _getData(configBaseAddr(), cb)
+}
+
+function schedulesData(cb) {
+  _getData(schedulesBaseAddr(), cb)
+}
+
+function scenesData(cb) {
+  _getData(scenesBaseAddr(), cb)
+}
+
+function sensorsData(cb) {
+  _getData(sensorsBaseAddr(), cb)
+}
+
+function rulesData(cb) {
+  _getData(rulesBaseAddr(), cb)
+}
+
+
+// api: LIGHTS
+function lightAddr(num) {
+  num = new String(num);
+  return lightsBaseAddr() + '/' + num + '/state';
 }
 
 function switchLights(turnOn, options) {
@@ -118,13 +192,17 @@ function switchLights(turnOn, options) {
     });
 }
 
-function switchLight(num, turnOn, options) {
+function switchLight(id, turnOn, options) {
     options = Object.assign({}, { on: turnOn }, options);
-    rq.put(lightAddr(num), reqBody(options), function(err, res, body) {
-        if (err) {
-            return console.error(err);
-        }
-    });
+    changeState(id, options);
+}
+
+function changeState(id, options) {
+  rq.put(lightAddr(id), reqBody(options), function(err, res, body) {
+      if (err) {
+          return console.error(err);
+      }
+  });
 }
 
 if ( require.main === module ) {
@@ -134,8 +212,14 @@ if ( require.main === module ) {
   module.exports = {
     lightAddr,
     initUser,
+    lightsData,
+    configData,
+    groupsData,
+    schedulesData,
+    scenesData,
+    rulesData,
     switchLights,
     switchLight,
-    lightsData
+    changeState
   }
 }
