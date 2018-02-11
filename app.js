@@ -7,7 +7,7 @@ let cfg = require('./config.json');
 let userCfg = require('./userConfig');
 
 // main
-function main(turnOn) {
+function main() {
   let turnOn = false;
   let arg = process.argv[2];
   if (arg !== undefined) {
@@ -28,7 +28,7 @@ function initUser(cb) {
 
   rq.post(hueAddr(), reqBody({ devicetype: userCfg.deviceType }), function(err, res, body) {
     if (body.error) {
-      console.error(red('ERR:'), red(body.error.description));
+      console.error(red('[ERR] ' + body.error.description));
       if (cb) {
         return cb(err, null);
       }
@@ -87,8 +87,6 @@ function switchLights(turnOn, options) {
         if (err) {
             return console.error(err);
         }
-        // show status of all lights
-        //console.log(body);
         Object.keys(data).map((num) => {
             switchLight(num, turnOn, options);
         });
@@ -110,6 +108,7 @@ if ( require.main === module ) {
 } else {
   module.exports = {
     lightAddr,
+    initUser,
     switchLights,
     switchLight,
     lightsData
