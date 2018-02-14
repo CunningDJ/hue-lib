@@ -1,4 +1,4 @@
 node_modules/
 
-config.json
-userConfig.json
+/config.json
+/userConfig.json

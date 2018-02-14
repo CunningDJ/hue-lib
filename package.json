@@ -1,15 +1,30 @@
 {
-  "name": "hue",
+  "name": "hue-lib",
   "version": "1.0.0",
-  "description": "",
+  "description": "A library for conveniently accessing and working with the Hue API.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "David J. Cunningham",
   "license": "ISC",
   "dependencies": {
     "chalk": "^2.3.1",
     "request": "^2.83.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CunningDJ/hueLibrary.git"
+  },
+  "keywords": [
+    "hue",
+    "api",
+    "philips",
+    "iot"
+  ],
+  "bugs": {
+    "url": "https://github.com/CunningDJ/hueLibrary/issues"
+  },
+  "homepage": "https://github.com/CunningDJ/hueLibrary#readme"
 }

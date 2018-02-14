@@ -9,6 +9,8 @@ let userCfg = require('./userConfig');
 
 /*
 
+MAJOR resources:
+
 /lights resource which contains all the light resources
 /groups resource which contains all the groups
 /config resource which contains all the configuration items
@@ -53,12 +55,51 @@ function getArgs() {
   }
 }
 
-// user
+// init & install
+function _checkInit() {
+  if (userCfg.username === undefined) {
+    throw new Error(red('[ERR] userConfig.json needs username.  Run initUser() if you haven\'t done so.'));
+  }
+}
+
+function _install() {
+    //  * TODO: *
+
+    // check if config.json and userconfig.json copied from templates/
+    // if not, copy them
+    //   ask if user wants to input manually, or with the prompt
+    //     if prompt, continue
+    //     if not, print manual insert instructions and exit
+
+    // check if bridgeIP is set
+    // if not, 
+    //   find the bridges in the network, 
+    //   list them by number, 
+    //   and ask user which (if multiple) they would like to use
+    //   if not multiple, just insert the bridge IP
+    //   IF THERE ISN'T A GOOD WAY TO DO THIS:
+    //     Give basic instructions for finding the bridge IP, ask them to enter it [stdin]
+
+    // check if deviceType set
+    // if not,
+    //   give template for devicetype name,
+    //   ask for deviceType if not [stdin]
+    
+
+    // check if username is set
+    //   if not, tell them to press the bridge button, and then to press [enter]
+    //   run the api to get the user key, insert the user key in userConfig.json 
+
+    // if an exit is given before the process is finished, return false
+    // else, return true
+}
+
+// * TODO: * Put initUser code into _install()?  Rework some of it?
 function initUser(cb) {
   let ERRTYPE = 101;
 
   if (!userCfg.deviceType) {
-    return console.error(red('[ERR] userConfig.json needs deviceType. Format: "[my_app_name]#[device] [your name]"'));
+    throw new Error(red('[ERR] userConfig.json needs deviceType. Format: "[my_app_name]#[device] [your name]"'));
   }
 
   rq.post(apiBaseAddr(), reqBody({ devicetype: userCfg.deviceType }), function(err, res, body) {
@@ -78,11 +119,6 @@ function initUser(cb) {
 
 
 // util
-function _checkInit() {
-  if (userCfg.username === undefined) {
-    throw new Error(red('[ERR] userConfig.json needs username.  Run initUser() if you haven\'t done so.'));
-  }
-}
 
 function reqBody(options) {
   return { body: options, json: true };
