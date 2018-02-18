@@ -8,7 +8,7 @@ This tool was made to simplify the process of connecting to your Hue API, provid
 3. `let hue = require('hue-lib')`;
 
 ## Overview
-* All hue.\*Data functions follow the (err, data) callback structure, each aligning with the different core API endpoints (see https://www.developers.meethue.com/documentation/core-concepts):
+* All `hue.*Data()` functions follow the (err, data) callback structure, each aligning with the different core API endpoints (see https://www.developers.meethue.com/documentation/core-concepts):
     * `/lights` resource which contains all the light resources
     * `/groups` resource which contains all the groups
     * `/config` resource which contains all the configuration items
