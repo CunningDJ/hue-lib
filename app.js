@@ -79,7 +79,6 @@ function getArgs() {
 
 // init & install
 function _checkInit() {
-  console.log('checkinit:', userCfg)
   if (userCfg.username === undefined) {
     throw new Error(red('[ERR] userConfig.json needs username.  Run initUser() if you haven\'t done so.'));
   }
