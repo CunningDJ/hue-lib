@@ -4,7 +4,7 @@ This tool was made to simplify the process of connecting to your Hue API, provid
 
 ## Setup Instructions:
 1. `npm install hue-lib`
-2. Respond to the command prompts for setup on the very first require.  You'll need physical access to your Hue Bridge.
+2. Respond to the command prompts for setup.  You'll need physical access to your Hue Bridge.  Follow the [Special Setup Instructions](#special-setup-instructions) if you don't have physical access to the Hue bridge during `npm install`.
 
 ## Import Instructions
 `let hue = require('hue-lib');`
