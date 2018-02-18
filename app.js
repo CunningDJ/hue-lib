@@ -111,9 +111,10 @@ function _install() {
   cfg = require('./config.json');
   userCfg = require('./userConfig.json');
 
-  if (process.env.NODE_ENV === "production") {
-    return console.log(yellow('PRODUCTION setup: coped config.json and userConfig.json into place.  Must be filled out manually.  Set NODE_ENV to "development" and npm install devDependencies for prompt-based setup.'));
-  }
+  // PRODUCTION INSTALL
+  //if (process.env.NODE_ENV === "production") {
+  //  return console.log(yellow('PRODUCTION setup: coped config.json and userConfig.json into place.  Must be filled out manually.  Set NODE_ENV to "development" and npm install devDependencies for prompt-based setup.'));
+  //}
 
   let questions = [];
 
