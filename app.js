@@ -45,7 +45,8 @@ MAJOR resources:
 // main
 function main() {
   if (process.argv[2] === 'install') {
-    _install();
+    console.log(yellow('----\n* RUNNING HUE-LIB SETUP SCRIPT.  PLEASE RESPOND TO PROMPT: *\n----'));
+    return _install();
   }
   let args = getArgs();
 
