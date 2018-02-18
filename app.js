@@ -44,7 +44,7 @@ MAJOR resources:
 
 // main
 function main() {
-  if (process.argv[2] === 'install') {
+  if (process.argv[2] === 'setup') {
     console.log(yellow('----\n* RUNNING HUE-LIB SETUP SCRIPT.  PLEASE RESPOND TO PROMPT: *\n----'));
     return _install();
   }
@@ -162,7 +162,9 @@ function _install() {
     // Set username
     _initUser(newConfig.deviceType, function(err, username) {
       if (err) {
-        throw err;
+        writeFileSync(CFG_FP, JSON.stringify(newConfig, null, '\t'));
+        console.error(red('[hue-lib setup error]'), err.message);
+        return console.error(red('hue-lib setup not complete.'),'Get physical access to your Hue bridge, then run the setup script again via', green('node node_modules/hue-lib/app.js setup'));
       } else {
         let newUserConfig = { username };
         newUserConfig.username = username;
@@ -210,20 +212,19 @@ function _initUser(deviceType, cb) {
 
   rq.post(apiBaseAddr(), reqBody({ devicetype: deviceType }), function(err, res, body) {
     body = body[0];
-    console.log('bod:', body);
     if (err) {
-      console.error(red('[ERR:RQ] ' + body.error.description));
+      //console.error(red('[ERR:RQ] ' + body.error.description));
       if (cb) {
         return cb(err, null);
       }
     } else if (body.error) {
-      console.error(red('[ERR:Username] ' + body.error.description));
+      //console.error(red('[ERR:Username] ' + body.error.description));
       if (cb) {
         var error = new Error(body.error.description);
         return cb(error, null);
       }
     } else {
-      console.log(green('User initialized:'), body.success.username);
+      //console.log(green('User initialized:'), body.success.username);
       if(cb) {
         return cb(null, body.success.username);
       }

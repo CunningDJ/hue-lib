@@ -1,10 +1,10 @@
 {
   "name": "hue-lib",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A library for conveniently accessing and working with the Hue API.",
   "main": "index.js",
   "scripts": {
-    "install": "node app.js install"
+    "install": "node app.js setup"
   },
   "author": "David J. Cunningham",
   "license": "ISC",
