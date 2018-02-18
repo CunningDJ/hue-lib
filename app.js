@@ -44,6 +44,9 @@ MAJOR resources:
 
 // main
 function main() {
+  if (process.argv[2] === 'install') {
+    _install();
+  }
   let args = getArgs();
 
   console.log('turn', args.turnOn ? "ON" : "OFF");
